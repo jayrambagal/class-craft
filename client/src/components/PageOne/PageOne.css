@@ -1,0 +1,10 @@
+::placeholder { 
+    color: #929EB6;
+    opacity: 1; 
+  }
+
+.Change_Forget{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
