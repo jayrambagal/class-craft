@@ -7,6 +7,8 @@ import "./App.css";
 import React, { useState } from "react";
 import tachyons from "tachyons";
 import MultiStepProgressBar from "./components/MultiStepProgressBar/MultiStepProgressBar";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function App() {
   const [page, setPage] = useState("pageone");
@@ -33,6 +35,33 @@ function App() {
         setPage("1");
     }
   };
+
+  const history = useNavigate();
+  const callAboutPage = async () =>{
+    try{
+      const res = await fetch("/home",
+      {
+        method:'GET',
+        headers:{Accept:'application/json',
+                "Contact-Type":'application/json'
+                },
+        credentials:'include'
+      })
+      console.log(res.status)
+      const data = res.json()
+      if(!res.status===200 || !data){
+        console.log(data);
+        throw new Error("user not found")
+      }else if(res.status === 401 || res.status===403){
+        history('/')
+      }
+    }catch(error){
+        console.log(error);
+    }
+  }
+  useEffect(()=>{
+    callAboutPage();
+  })
 
   return (
     <div className="App">

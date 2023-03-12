@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import logo2 from './logo2.png';
 import "./login.css"
@@ -6,7 +6,37 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
+    const [email,setEmail] = useState()
+    const [password,setPassword] = useState()
     const navigate = useNavigate()
+  
+    const LoginPage = async(e)=>{
+      e.preventDefault()
+
+      try{
+        console.log(email,password)
+        const res = await fetch('/login',{
+          method:'POST',
+          body:JSON.stringify({ email,password}),
+          headers:{'Content-Type':'application/json'}
+        })
+
+        const data = await res.json()
+        
+
+        if(res.status===200){
+          window.alert("login Successfully !")
+          navigate('/home')  
+        }
+        else{
+          window.alert("invalid Crediantials")
+        }
+
+      }catch(err){
+        console.log(err)
+      }
+    }
+
   return (
   
     
@@ -20,7 +50,7 @@ const Login = () => {
             <span className="mt3 f4">ClassCraft</span>
         </div>
 
-      <form className="measure" >
+      <form className="measure" method='POST'>
         <h2 >Welcome to ClassCraft !</h2>
         <h3 style={{color: "#664DE5"}}>Login</h3>
         <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
@@ -30,7 +60,7 @@ const Login = () => {
               htmlFor="full-name"
               style={{ textAlign: "left" }}
             >
-              Username
+              Email
             </label>
             <input
               className="f6 br2 ph3 pv2 mb2 dib black w-100"
@@ -38,7 +68,9 @@ const Login = () => {
               name="full-name"
               id="full-name"
               size="30"
-              placeholder="username"
+              placeholder="Email"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
               style={{
                 borderStyle: "solid",
                 borderWidth: "1px",
@@ -60,6 +92,8 @@ const Login = () => {
               name="display-name"
               id="display-name"
               placeholder="password"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
               style={{
                 borderStyle: "solid",
                 borderWidth: "1px",
@@ -85,8 +119,7 @@ const Login = () => {
             }}
             type="submit"
             value="Login"
-            onClick={()=>{navigate('/home')}}
-            
+            onClick={LoginPage}
           />
         </div>
       </form>
