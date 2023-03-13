@@ -14,7 +14,7 @@ const Login = () => {
       e.preventDefault()
 
       try{
-        console.log(email,password)
+
         const res = await fetch('/login',{
           method:'POST',
           body:JSON.stringify({ email,password}),
@@ -88,7 +88,7 @@ const Login = () => {
             </label>
             <input
               className="f6 br2 ph3 pv2 mb2 dib black w-100"
-              type="text"
+              type="password"
               name="display-name"
               id="display-name"
               placeholder="password"
@@ -102,8 +102,8 @@ const Login = () => {
             />
           
             <div className="Change_Forget">
-          <NavLink>Change password </NavLink>
-          <NavLink>Forget password </NavLink>
+          <NavLink style={{marginTop:"10px"}}>Change password </NavLink>
+          <NavLink to="/forget" style={{marginTop:"10px"}}>Forget password ? </NavLink>
           </div>
           </div>
           

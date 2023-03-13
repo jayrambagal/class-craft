@@ -5,10 +5,12 @@ const jwt = require("jsonwebtoken")
 require('dotenv').config()
 require("../app");
 const User = require("../DataBase/userSchema")
+const Otp = require("../DataBase/optSchema")
 const Authenticate = require("../Middleware/Authentication")
 require("cookie-parser")
 
 
+// taking data from req.body and store the data in mongodb Database 
 router.post("/register",async(req,res)=>{
     const {email,password} = req.body
 
@@ -34,6 +36,7 @@ router.post("/register",async(req,res)=>{
 
 })
 
+//Adding login Authentication through here and creating the jwt tokens for auth 
 router.post("/login",async(req,res)=>{
     try{
         const {email,password} = req.body
@@ -83,10 +86,67 @@ router.post("/login",async(req,res)=>{
     }
 })
 
+// adding forget email to opts data collections in database
+
+router.post("/sendmail", async(req,res)=>{
+    const email = req.body.email
+    if(!email){
+        res.status(400).json({error:"email are require"})
+    }
+    try{
+        const emailExist = await User.findOne({email:email})
+
+    if(emailExist){
+        const OtpCode = Math.floor((Math.random()*10000+1))
+        const OtpData = new Otp({
+            email,
+            otp:OtpCode,
+            expireIn: new Date().getTime() + 300*1000
+        })
+        await OtpData.save()
+        res.status(200).json({success:"send opt done"})
+    }
+    else{
+        res.status(400).json({error:"email does not exists"})
+    }
+    }catch(err){
+        console.log(err)
+        res.send(400)
+    }
+    
+    
+})
+
+// validating the otp and changeing the password with new one
+
+router.post('/changepass',async(req,res)=>{
+    const data = await Otp.findOne({email:req.body.email , otp:req.body.Otp})
+
+    if (data){
+        const currentTime = new Date().getTime();
+        const diff  = data.expireIn - currentTime
+
+        if (diff<0){
+            res.status(400).json({message:"otp is expire"})
+        }
+        else{
+            const user = await User.findOne({email:req.body.email})
+            user.password = req.body.password
+            await user.save()
+            res.status(200).json({message:"reset password successfully"})
+        }
+    }
+    else{
+        res.status(400).json({error:"invalid otp"})
+    }
+})
+
+// adding middleware in /home 
 router.get("/home",Authenticate,(req,res)=>{
     res.status(200).send("Welcome 🙌 ");
 })
 
+// logout
 router.get("/logout",(req,res)=>{
     console.log("we are in logout")
     res.clearCookie("jwttoken",{path:"/"})
