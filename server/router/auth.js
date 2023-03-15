@@ -2,6 +2,7 @@ const express = require("express")
 const bcrypt = require("bcryptjs")
 const router = express.Router()
 const jwt = require("jsonwebtoken")
+const nodemailer = require("nodemailer")
 require('dotenv').config()
 require("../app");
 const User = require("../DataBase/userSchema")
@@ -104,6 +105,34 @@ router.post("/sendmail", async(req,res)=>{
             expireIn: new Date().getTime() + 300*1000
         })
         await OtpData.save()
+
+        try{
+            const mailTransporter = nodemailer.createTransport({
+                service:"gmail",
+                auth:{
+                    user:"jayram.bagal.it@ghrcem.raisoni.net",
+                    pass:"jayram@1234"
+                }
+            })
+            const details = {
+                from:"jayram.bagal.it@ghrcem.raisoni.net",
+                to:email,
+                subject:`Your ClassCarft reset password OTP is ${OtpCode}`,
+                text:`Your one time password for resetting the password is ${OtpCode}`
+            }
+            
+            mailTransporter.sendMail(details,(err)=>{
+                if(err){
+                    console.log(err)
+                }else{
+                    console.log("mail send successfully");
+                }
+            })
+        }catch(err){
+            console.log("error in sending emale to email");
+        }
+        
+
         res.status(200).json({success:"send opt done"})
     }
     else{

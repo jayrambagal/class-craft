@@ -5,7 +5,7 @@ dotenv.config({path:"../config.env"})
 
 
 const userSchema = new mongoose.Schema({
-    email:{
+        email:{
         type:String,
         require:true
         },
