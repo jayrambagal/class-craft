@@ -3,11 +3,14 @@ import { NavLink } from 'react-router-dom'
 import logo2 from './logo2.png';
 import "./login.css"
 import { useNavigate } from 'react-router-dom';
+import hidePwdImg from "./hide.png";
+import showPwdImg from "./show.png";
 
 const Login = () => {
 
     const [email,setEmail] = useState()
     const [password,setPassword] = useState()
+    const [isRevealPwd, setIsRevealPwd] = useState(false);
     const navigate = useNavigate()
   
     const LoginPage = async(e)=>{
@@ -78,7 +81,7 @@ const Login = () => {
               }}
             />
           </div>
-          <div className="mv3">
+          <div className="mv3" style={{position:"relative" }} >
             <label
               className="db lh-copy f6 mb1"
               htmlFor="display-name"
@@ -88,7 +91,7 @@ const Login = () => {
             </label>
             <input
               className="f6 br2 ph3 pv2 mb2 dib black w-100"
-              type="password"
+              type={isRevealPwd ? "text" : "password"}
               name="display-name"
               id="display-name"
               placeholder="password"
@@ -100,10 +103,17 @@ const Login = () => {
                 borderColor: "#EAEEF5",
               }}
             />
+            <img
+              title={isRevealPwd ? "Hide password" : "Show password"}
+              src={isRevealPwd ? hidePwdImg : showPwdImg}
+              onClick={() => setIsRevealPwd((prevState) => !prevState)}
+              alt=""
+              style={{width:"23px",height:"22px",cursor:"pointer",position:"absolute",marginLeft:"-35px",marginTop:"5px"}}
+            />
           
             <div className="Change_Forget">
-          <NavLink style={{marginTop:"10px"}}>Change password </NavLink>
-          <NavLink to="/forget" style={{marginTop:"10px"}}>Forget password ? </NavLink>
+            {/*<NavLink to="/changepassword" style={{marginTop:"10px"}}>Change password </NavLink>*/}
+          <NavLink to="/forget" style={{marginTop:"10px"}}>Change or Forget password ? </NavLink>
           </div>
           </div>
           

@@ -77,7 +77,7 @@ const ForgetPass = () => {
         <form className="measure" method='POST'>
       
         <h2 style={{color: "#664DE5"}}>Reset Password</h2>
-        <h4 >Forgotten your password? Enter your e-mail address below, and we'll send you an e-mail allowing you to reset it.</h4>
+        <h4 >For changeing or Forgotten your password? Enter your e-mail address below, and we'll send you an e-mail allowing you to reset it.</h4>
         <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
           <div className="mt3">
             <label
