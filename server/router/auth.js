@@ -7,10 +7,25 @@ require('dotenv').config()
 require("../app");
 const User = require("../DataBase/userSchema")
 const Otp = require("../DataBase/optSchema")
+const Info = require("../DataBase/infoSchema")
 const Authenticate = require("../Middleware/Authentication")
 require("cookie-parser")
 
 
+
+router.post("/home",async(req,res)=>{
+    console.log(req.body);
+    const {firstname,middlename,lastname,registraiton_no,deparment,rollno,division} =req.body
+
+    if(!firstname || !lastname || !registraiton_no || !deparment || !rollno || !division){
+        return res.status(422).json({message:"plz filled all field properly"})
+    }else{
+        const info = new Info({firstname,middlename,lastname,registraiton_no,deparment,rollno,division})
+        await info.save()
+        return res.status(200).json({message:"data added successfully"})
+    }
+
+})
 // taking data from req.body and store the data in mongodb Database 
 router.post("/register",async(req,res)=>{
     const {email,password} = req.body
@@ -172,6 +187,7 @@ router.post('/changepass',async(req,res)=>{
 
 // adding middleware in /home 
 router.get("/home",Authenticate,(req,res)=>{
+
     res.status(200).send("Welcome 🙌 ");
 })
 
